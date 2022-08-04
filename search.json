@@ -1,0 +1,72 @@
+[
+  {
+    "objectID": "greedy.html",
+    "href": "greedy.html",
+    "title": "leetcode",
+    "section": "",
+    "text": "Update a running sum and reset it when it becomes negative. Update max each loop.\n\nclass Solution:\n    def maxSubArray(self, nums: List[int]) -> int:\n        sm = nums[0] # max sum\n        sr = 0       # running sum\n        \n        for n in nums:\n            if sr < 0: sr = 0 # reset running sum if it cant contribute\n            sr += n           # update running sum\n            sm = max(sr, sm)  # update max\n        \n        return sm"
+  },
+  {
+    "objectID": "core.html",
+    "href": "core.html",
+    "title": "leetcode",
+    "section": "",
+    "text": "func ()"
+  },
+  {
+    "objectID": "intervals.html",
+    "href": "intervals.html",
+    "title": "leetcode",
+    "section": "",
+    "text": "Comp O(N). Just a few quick checks: is new before, after, or: merge overlap.\n\nloop:\n\ncheck new end < old[i] start: return new + old\ncheck new start > old[i] end: append old[i]\ncheck overlap: merge new + old[i]\n\nappend new and return\n\n\nclass Solution:\n    def insert(self, intervals: List[List[int]], newInterval: List[int]) -> List[List[int]]:\n        res = []\n\n        for i in range(len(intervals)):\n            # check new end < old[i] start\n            if newInterval[1] < intervals[i][0]:\n                res.append(newInterval)\n                return res + intervals[i:]\n            # check new start > old[i] end\n            elif newInterval[0] > intervals[i][1]:\n                res.append(intervals[i])\n            # check overlap\n            else:\n                newInterval = [min(newInterval[0],intervals[i][0]),\n                               max(newInterval[1],intervals[i][1])]\n\n        # append if new overlapped to end\n        res.append(newInterval)\n\n        return res"
+  },
+  {
+    "objectID": "sketch.html",
+    "href": "sketch.html",
+    "title": "leetcode",
+    "section": "",
+    "text": "nums = [2,7,11,15]\ntarg = 9\n\ncomps = {}\nfor i,n in enumerate(nums):\n    comp = (targ - n)\n    print(comp)\n    if n in comps:\n        print(f'FOUND: {comps[n],i}: {comp} + {n} = {targ}')\n    comps[comp] = i\n\n7\n2\nFOUND: (0, 1): 2 + 7 = 9\n-2\n-6"
+  },
+  {
+    "objectID": "graphs.html",
+    "href": "graphs.html",
+    "title": "leetcode",
+    "section": "",
+    "text": "Count number of islands in a grid.\nIterative BFS. Set to track visited coords. Loop rows & cols: do nothing on water, if unvisited land, run BFS on coord, incr islands.\nBFS: * use queue (collections.deque) to track coords * mark coord visited * add coord to queue * while queue not empty expand island * pop coord from queue (popleft()); (if pop(): pops right and does iterative DFS) * create array of directions * for each direction: * check in bounds; check is land; check unvisited * if all true: * add coord to queue and run BFS on it * mark coord visited\n\n# import collections\n\nclass Solution:\n    def numIslands(self, grid: List[List[str]]) -> int:\n        # BFS search\n        def bfs(r, c):\n            # create queue to hold coords to check\n            q = collections.deque()\n            visited.add((r,c))\n            q.append((r,c))\n            # while queue not empty: expand island\n            while q:\n                # pop coord from queue; create array of directions\n                row,col = q.popleft() # pop will pop right and do iterative DFS\n                dirs = [[1,0],[-1,0],[0,1],[0,-1]]\n\n                for dr, dc in dirs:\n                    r,c = row + dr, col + dc\n                    # check in bounds, check is land, check unvisted\n                    if (r in range(rows) and c in range(cols) and # rows, cols comes from upper state\n                        grid[r][c] == \"1\" and\n                        (r,c) not in visited):\n                        # if all true: add coord to queue to run BFS on it; mark coord visited\n                        q.append((r,c))\n                        visited.add((r,c))\n                        bfs(r,c)\n        \n        # return 0 if no grid\n        if not grid:\n            return 0\n        \n        rows,cols = len(grid), len(grid[0])\n        visited = set()\n        islands = 0\n        \n        for r in range(rows):\n            for c in range(cols):\n                # do nothing on water; if unvisited land: run BFS on coord, inc visited\n                if grid[r][c] == \"1\" and (r,c) not in visited:\n                    bfs(r,c)\n                    islands += 1\n        # return num islands\n        return islands\n\n\n\n\nDFS. comp O(E^2)\n\nbuild sorted adjacency list\ninit history\nDFS\n\ncase found solution (len hst == len tickets + 1)\ncase no path (src not in adjmap)\nrecursive: enumerate over copy of adj sublist; modify adjmap – loop(recur) pattern implements backtracking\n\npop dst from adjmap, append to hst\ncheckpath w/ dfs on dst node: if true: found, return\notherwise undo action; loop continues to next candidate dst node\n\nno valid path found\n\nrun dfs on origin source node\n\n\nclass Solution:\n    def findItinerary(self, tickets: List[List[str]]) -> List[str]:\n\n        # build sorted adjacency list\n        tickets.sort()\n        adjmap = {src:[] for src,dst in tickets}\n        for src,dst in tickets:\n            adjmap[src].append(dst)\n\n        # init history\n        hst = ['JFK']\n\n        # DFS\n        def dfs(src):\n            # case found solution\n            if len(hst) == len(tickets) + 1: return True\n            # case no path\n            if src not in adjmap: return False\n            # recursive\n            # enuemrate over copy of adj sublist; modify adjmap\n            adjsublist = list(adjmap[src])\n            for i, dst in enumerate(adjsublist): # loop(recur) pattern implements backtracking\n                # pop dst from adjmap, append to hst\n                adjmap[src].pop(i)\n                hst.append(dst)\n                # checkpath w/ dfs on dst node: if true: found, return\n                if dfs(dst): return True\n                # otherwise undo action; loop continues to next candidate dst node\n                adjmap[src].insert(i, dst)\n                hst.pop()\n            # no valid path found\n            return False\n\n        # run dfs on origin source node\n        dfs('JFK')\n\n        return hst"
+  },
+  {
+    "objectID": "heaps_queues.html",
+    "href": "heaps_queues.html",
+    "title": "leetcode",
+    "section": "",
+    "text": "Use heapq to implement a min heap priority queue.\nProblem is monotomic: numbers are only added, and the class is supposed to return the updated kth largest element. Therefore:\n\nmaintain a minheap of the k largest numbers:\n\non init:\n\nbuild the minheap from the input array (heapify).\nremove the minimum (heappop) until heap size is k\n\non add:\n\nadd the new number to the minheap (heappush). Internal heap property will take care of the details.\nremove the minimum (heappop) until heap size is k\nreturn minimum ([0])\n\n\n\nNote: heapq.heapify modifies an existing array and returns nothing.\nComplexity:\n\ncomputational: O(NlogN) > N, logN add operations.\n\n\n# import heapq\n\nclass KthLargest:\n    def __init__(self, k: int, nums: List[int]):\n        self.k = k\n        # initialize queue\n        self.minheap = nums\n        heapq.heapify(self.minheap)\n        # correct queue size\n        while len(self.minheap) > self.k:\n            heapq.heappop(self.minheap)\n\n    def add(self, val: int) -> int:\n        heapq.heappush(self.minheap, val)\n        while len(self.minheap) > self.k:\n            heapq.heappop(self.minheap)\n        # return updated kth largest element\n        return self.minheap[0]"
+  },
+  {
+    "objectID": "backtracking.html",
+    "href": "backtracking.html",
+    "title": "leetcode",
+    "section": "",
+    "text": "Backtracking\n\n78. Subsets M\nRecursive DFS tree. left branch: append indexed value, right branch: pass. End recursive call when index ≥ input length.\nUpdate return array in end case w/ copy of working array (to avoid modifying its state among different branches).\nComputational complexity: N•2^N\n\nclass Solution:\n    def subsets(self, nums: List[int]) -> List[List[int]]:\n        \n        powerset = [] # return array\n        subset = []   # working array\n        \n        def dfs(i):\n            # end state\n            if i >= len(nums):\n                powerset.append(subset.copy())\n                return\n            \n            # left branch (add)\n            subset.append(nums[i])\n            dfs(i+1)\n            \n            # right branch (pass)\n            subset.pop() # remove value added for left branch\n            dfs(i+1)\n            \n        dfs(0)\n        return powerset"
+  },
+  {
+    "objectID": "math_geometry.html",
+    "href": "math_geometry.html",
+    "title": "leetcode",
+    "section": "",
+    "text": "comp O(N^2) - matrix size: N^2\nTrack 4 pointers: left,right,top,bottom. While loop to control depth, forloop controls rotation. Use forloop’s index to specify alternating coordinate offset. Start rotation by storing first value, then swap values in opposite order of rotation (CCW for CW rot).\n\nclass Solution:\n    def rotate(self, matrix: List[List[int]]) -> None:\n        \"\"\"\n        Do not return anything, modify matrix in-place instead.\n        \"\"\"\n        # set l,r bounds\n        l,r = 0, len(matrix) - 1\n\n        while l < r:\n            for i in range(r-l):\n                t,b = l,r\n                # save top left\n                tl = matrix[t][l+i]\n                # move bottom left → top left\n                matrix[t][l+i] = matrix[b-i][l]\n                # move bottom right → bottom left\n                matrix[b-i][l] = matrix[b][r-i]\n                # move top right → bottom right\n                matrix[b][r-i] = matrix[t+i][r]\n                # move top left save → top right\n                matrix[t+i][r] = tl\n            # increment depth\n            l += 1\n            r -= 1"
+  },
+  {
+    "objectID": "bit_manipulation.html",
+    "href": "bit_manipulation.html",
+    "title": "leetcode",
+    "section": "",
+    "text": "Initialize a result variable to 0, XOr every number with it. Every duplicate number will cancel out and the result will be the only non-duplicate number.\n\nclass Solution:\n    def singleNumber(self, nums: List[int]) -> int:\n        res = 0\n        for n in nums:\n            res ^= n\n        return res"
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Coding Practice",
+    "section": "",
+    "text": "Study repository."
+  }
+]
