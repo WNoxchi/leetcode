@@ -3,6 +3,6 @@
 # %% auto 0
 __all__ = ['func']
 
-# %% ../core.ipynb 2
+# %% ../core.ipynb 3
 def func():
     return 0
