@@ -1,0 +1,14 @@
+website:
+  sidebar:
+    contents:
+      - index.ipynb
+      - arrays_hashing.ipynb
+      - backtracking.ipynb
+      - bit_manipulation.ipynb
+      - core.ipynb
+      - graphs.ipynb
+      - greedy.ipynb
+      - heaps_queues.ipynb
+      - intervals.ipynb
+      - math_geometry.ipynb
+      - sketch.ipynb
